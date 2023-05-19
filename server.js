@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
+require("dotenv").config();
+const cors = require("cors");
+app.use(cors());
 const { Pool } = require("pg");
 const pool = new Pool();
 
@@ -8,8 +11,13 @@ const port = process.env.PORT || 8080;
 
 // "http:localhost:8080/api/?query=honey"
 
-app.get("/api/", (req, res) => {
-  if (!req.query) {
+app.get("/", (req, res) => {
+  res.send("working");
+});
+
+app.get("/api", (req, res) => {
+  console.log(req.query);
+  if (!Object.keys(req.query).length) {
     pool.connect().then((client) => {
       return client
         .query("SELECT * FROM desert;")
